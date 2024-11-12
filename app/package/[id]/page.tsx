@@ -7,16 +7,16 @@ import BookingForm from "@/app/_components/BookingForm";
 import { useState, useEffect } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
-// interface House {
-//   id: string;
-//   title: string;
-//   location: string;
-//   price: number;
-//   description: string;
-//   amenities: string[];
-//   images: string[];
-//   duration: string;
-// }
+interface House {
+  id: string;
+  title: string;
+  location: string;
+  price: number;
+  description: string;
+  amenities: string[];
+  images: string[];
+  duration: string;
+}
 
 interface PackageDetailsProps {
   params: { id: string };

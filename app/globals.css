@@ -26,6 +26,16 @@ body {
   }
 }
 
+/* Hide default spinner controls in input[type="number"] */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 /* Leaflet CSS */
 /* .leaflet-container {
   width: 100%;

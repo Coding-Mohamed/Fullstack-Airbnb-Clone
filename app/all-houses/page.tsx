@@ -3,18 +3,18 @@ import { db } from "../../firebaseConfig";
 import Link from "next/link"; // For linking to individual listings
 import { FaArrowLeft } from "react-icons/fa";
 
-// interface Listing {
-//   id: string;
-//   title: string;
-//   location: string;
-//   price: number;
-//   description: string;
-//   number_of_bedrooms: number;
-//   number_of_bathrooms: number;
-//   amenities: string[];
-//   images: string[];
-//   uid: string;
-// }
+interface Listing {
+  id: string;
+  title: string;
+  location: string;
+  price: number;
+  description: string;
+  number_of_bedrooms: number;
+  number_of_bathrooms: number;
+  amenities: string[];
+  images: string[];
+  uid: string;
+}
 
 const ServerListings: React.FC = async () => {
   //   const [listings, setListings] = useState<Listing[]>([]);

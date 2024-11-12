@@ -23,14 +23,14 @@ const AddPackageForm: React.FC = () => {
     highlights: "",
   });
   const [imageFiles, setImageFiles] = useState<File[]>([]);
-  const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [notification, setNotification] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const router = useRouter();
   const auth = getAuth(app);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) setUser(currentUser);
-      else setShowPopup(true);
+      else setNotification({ message: "Please sign in or register to add a package.", type: "error" });
     });
     return () => unsubscribe();
   }, [auth]);
@@ -49,7 +49,7 @@ const AddPackageForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
-      setShowPopup(true);
+      setNotification({ message: "Please sign in or register to add a package.", type: "error" });
       return;
     }
 
@@ -70,7 +70,11 @@ const AddPackageForm: React.FC = () => {
 
     try {
       await addDoc(collection(firestore, "packages"), newPackage);
-      alert("Package added successfully");
+      setNotification({ message: "Package added successfully!", type: "success" });
+      setTimeout(() => {
+        setNotification(null);
+        router.push("/all-packages"); // Redirect after successful package addition
+      }, 3000);
       setFormData({
         title: "",
         location: "",
@@ -83,6 +87,7 @@ const AddPackageForm: React.FC = () => {
       setImageFiles([]);
     } catch (error) {
       console.error("Error adding package:", error);
+      setNotification({ message: "Failed to add package. Please try again.", type: "error" });
     }
   };
 
@@ -111,14 +116,15 @@ const AddPackageForm: React.FC = () => {
   }
 
   return (
-    <div className="max-w-lg mx-auto mt-10 p-8 bg-white shadow-lg rounded-xl">
-      <div className="flex items-center justify-center mb-4">
-        <button onClick={() => router.push("/")} className="text-gray-600 hover:text-gray-800 text-2xl mr-2" aria-label="Go back">
-          <FaArrowLeft />
-        </button>
-        <h2 className="text-xl font-bold text-gray-800">Add New Package</h2>
-      </div>
-      <form onSubmit={handleSubmit} className="space-y-5">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center">
+      {notification && <div className={`fixed top-4 right-4 z-50 text-white px-4 py-2 rounded-lg ${notification.type === "success" ? "bg-green-500" : "bg-red-500"}`}>{notification.message}</div>}
+      <form onSubmit={handleSubmit} className="w-full max-w-2xl p-6 bg-white shadow-lg rounded-lg space-y-5 pb-20">
+        <div className="flex items-center justify-center mb-4">
+          <button onClick={() => router.push("/")} className="text-gray-600 hover:text-gray-800 text-2xl mr-2" aria-label="Go back">
+            <FaArrowLeft />
+          </button>
+          <h2 className="text-xl font-bold text-gray-800">Add New Package</h2>
+        </div>
         {["title", "location", "price", "description", "duration", "category"].map((field) => (
           <div key={field}>
             <label className="block text-lg font-medium text-gray-600 mb-1 capitalize">{field}</label>

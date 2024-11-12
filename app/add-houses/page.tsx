@@ -23,13 +23,13 @@ const AddListingComponent: React.FC = () => {
     amenities: "",
   });
   const [imageFiles, setImageFiles] = useState<File[]>([]);
-  const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [notification, setNotification] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) setUser(currentUser);
-      else setShowPopup(true);
+      else setNotification({ message: "Please sign in or register to add a listing.", type: "error" });
     });
     return () => unsubscribe();
   }, []);
@@ -46,7 +46,7 @@ const AddListingComponent: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
-      setShowPopup(true);
+      setNotification({ message: "Please sign in or register to add a listing.", type: "error" });
       return;
     }
 
@@ -69,7 +69,11 @@ const AddListingComponent: React.FC = () => {
 
     try {
       await addDoc(collection(db, "listings"), listingData);
-      alert("Listing added successfully!");
+      setNotification({ message: "Listing added successfully!", type: "success" });
+      setTimeout(() => {
+        setNotification(null);
+        router.push("/all-houses"); // Redirect after successful listing addition
+      }, 3000);
       setFormData({
         title: "",
         location: "",
@@ -82,6 +86,7 @@ const AddListingComponent: React.FC = () => {
       setImageFiles([]);
     } catch (error) {
       console.error("Error adding listing:", error);
+      setNotification({ message: "Failed to add listing. Please try again.", type: "error" });
     }
   };
 
@@ -111,7 +116,8 @@ const AddListingComponent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center">
-      <form onSubmit={handleSubmit} className="w-full max-w-2xl p-6 bg-white shadow-lg rounded-lg space-y-5">
+      {notification && <div className={`fixed top-4 right-4 z-50 text-white px-4 py-2 rounded-lg ${notification.type === "success" ? "bg-green-500" : "bg-red-500"}`}>{notification.message}</div>}
+      <form onSubmit={handleSubmit} className="w-full max-w-2xl p-6 bg-white shadow-lg rounded-lg space-y-5 pb-10">
         <div className="flex items-center justify-center mb-4">
           <button onClick={() => router.push("/")} className="text-gray-600 hover:text-gray-800 text-2xl mr-2" aria-label="Go back">
             <FaArrowLeft />
@@ -137,7 +143,7 @@ const AddListingComponent: React.FC = () => {
             ))}
           </div>
         </div>
-        <button type="submit" className="w-full py-3 mt-4 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition duration-200">
+        <button type="submit" className="w-full py-3 mt-4 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition duration-200 ">
           Add Listing
         </button>
       </form>

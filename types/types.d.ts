@@ -40,17 +40,17 @@ export interface House {
   category: string; // Category of the house (e.g., "Apartment", "House")
 }
 
-export interface Listing {
-  id: string;
-  title: string;
-  location: string;
-  price: number;
-  description: string;
-  number_of_bedrooms: number;
-  number_of_bathrooms: number;
-  amenities: string[];
-  images: string[];
-}
+// export interface Listing {
+//   id: string;
+//   title: string;
+//   location: string;
+//   price: number;
+//   description: string;
+//   number_of_bedrooms: number;
+//   number_of_bathrooms: number;
+//   amenities: string[];
+//   images: string[];
+// }
 
 interface House {
   id: string;
@@ -64,16 +64,16 @@ interface House {
   images: string[];
 }
 
-interface Booking {
-  id: string;
-  houseId: string;
-  type: string;
-  title: string;
-  imageURL: string;
-  startDate: string;
-  endDate: string;
-  location?: string;
-}
+// interface Booking {
+//   id: string;
+//   houseId: string;
+//   type: string;
+//   title: string;
+//   imageURL: string;
+//   startDate: string;
+//   endDate: string;
+//   location?: string;
+// }
 
 interface Package {
   id: string;

@@ -4,7 +4,7 @@ import { FaMapMarkerAlt, FaCalendarAlt, FaUserFriends } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useRouter } from "next/navigation";
-import { City, DateRange, SearchParams } from "../../types/types";
+import { City, DateRange } from "../../types/types";
 import images from "./Images";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
@@ -22,7 +22,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ citiesEndpoint }) => {
   const [cities, setCities] = useState<City[]>([]);
   const [showCities, setShowCities] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -36,7 +36,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ citiesEndpoint }) => {
     return () => clearInterval(interval);
   }, []);
 
-  // Fetch available cities from Firebase
   useEffect(() => {
     const fetchCities = async () => {
       try {
@@ -73,19 +72,21 @@ const HeroSection: React.FC<HeroSectionProps> = ({ citiesEndpoint }) => {
   const handleCitySelect = (cityName: string) => {
     setLocation(cityName);
     setShowCities(false);
+    setErrorMessage(""); // Clear error message when a city is selected
   };
 
   const handleSearch = async () => {
-    try {
-      // Create queries for both listings and packages
-      const listingsQuery = query(collection(db, "listings"), where("location", "==", location));
+    if (!location) {
+      setErrorMessage("Please select a location before searching.");
+      return;
+    }
 
+    try {
+      const listingsQuery = query(collection(db, "listings"), where("location", "==", location));
       const packagesQuery = query(collection(db, "packages"), where("location", "==", location));
 
-      // Execute both queries in parallel
       const [listingsSnapshot, packagesSnapshot] = await Promise.all([getDocs(listingsQuery), getDocs(packagesQuery)]);
 
-      // Combine and format results
       const results = [
         ...listingsSnapshot.docs.map((doc) => ({
           id: doc.id,
@@ -99,7 +100,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ citiesEndpoint }) => {
         })),
       ];
 
-      // Update URL with search parameters
       const searchParams = new URLSearchParams({
         location,
         startDate: dateRange.startDate?.toISOString() || "",
@@ -107,11 +107,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ citiesEndpoint }) => {
         guests: guests.toString(),
       });
 
-      // Navigate to search results page with the search parameters
       router.push(`/search?${searchParams.toString()}`);
-
-      // Store results in state or pass them through router state
-      setSearchResults(results);
     } catch (error) {
       console.error("Error performing search:", error);
     }
@@ -127,10 +123,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ citiesEndpoint }) => {
         <p className="text-base md:text-lg mb-8">Discover amazing places in the world</p>
 
         <div className="bg-white p-4 rounded-lg shadow-lg flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 w-full max-w-4xl">
-          {/* Location Input */}
           <div className="relative flex items-center bg-gray-100 p-2 rounded-lg w-full md:w-1/4 border border-gray-300" ref={dropdownRef}>
             <FaMapMarkerAlt className="absolute left-3 text-gray-500" />
-            <input type="text" placeholder="Select a location" value={location} onFocus={() => setShowCities(true)} readOnly className="bg-transparent flex-1 pl-10 text-black focus:outline-none cursor-pointer" />
+            <input type="text" placeholder="Select a location" required value={location} onFocus={() => setShowCities(true)} readOnly className="bg-transparent flex-1 pl-10 text-black focus:outline-none cursor-pointer" />
             {showCities && (
               <ul className="absolute z-20 w-full bg-white border border-gray-300 mt-1 rounded-md shadow-lg max-h-60 overflow-auto left-0 top-full">
                 {cities.map((city) => (
@@ -142,7 +137,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ citiesEndpoint }) => {
             )}
           </div>
 
-          {/* Date Pickers */}
           <div className="relative flex items-center bg-gray-100 p-2 rounded-lg w-full md:w-1/5 border border-gray-300">
             <FaCalendarAlt className="absolute left-3 text-gray-500" />
             <DatePicker selected={dateRange.startDate} onChange={(date) => setDateRange((prev) => ({ ...prev, startDate: date }))} selectsStart startDate={dateRange.startDate} endDate={dateRange.endDate} placeholderText="Check-in" className="bg-transparent flex-1 pl-10 text-black focus:outline-none" />
@@ -153,17 +147,16 @@ const HeroSection: React.FC<HeroSectionProps> = ({ citiesEndpoint }) => {
             <DatePicker selected={dateRange.endDate} onChange={(date) => setDateRange((prev) => ({ ...prev, endDate: date }))} selectsEnd startDate={dateRange.startDate} endDate={dateRange.endDate} minDate={dateRange.startDate} placeholderText="Check-out" className="bg-transparent flex-1 pl-10 text-black focus:outline-none" />
           </div>
 
-          {/* Guests Input */}
           <div className="relative flex items-center bg-gray-100 p-2 rounded-lg w-full md:w-1/6 border border-gray-300">
             <FaUserFriends className="absolute left-3 text-gray-500" />
             <input type="number" min="1" value={guests} onChange={(e) => setGuests(Number(e.target.value))} className="bg-transparent flex-1 pl-10 text-gray-600 focus:outline-none no-spinner" placeholder="Guests" />
           </div>
 
-          {/* Search Button */}
           <button onClick={handleSearch} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg w-full md:w-auto">
             Search
           </button>
         </div>
+        {errorMessage && <p className="text-red-500 mt-4">{errorMessage}</p>}
       </div>
     </div>
   );

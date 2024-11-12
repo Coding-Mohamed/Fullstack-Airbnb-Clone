@@ -47,7 +47,7 @@ const AdvertisePackages = () => {
           <div className="bg-white bg-opacity-80 p-6 rounded-lg shadow-lg max-w-md">
             <h2 className="text-lg font-bold mb-4 text-black">List Your Packages with Confidence on Nordic Exp</h2>
             <p className="text-sm text-black mb-6">Enjoy seamless package management with 24/7 support, easy setup, and top-rated customers. Listing packages on Nordic is as relaxing as a vacation.</p>
-            <Link href="/packages">
+            <Link href="/add-packages">
               <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg">List Your Packages</button>
             </Link>
           </div>

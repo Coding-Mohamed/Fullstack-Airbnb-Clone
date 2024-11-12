@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import Link from "next/link";
+import { FaArrowLeft } from "react-icons/fa";
 
 interface Package {
   id: string;
@@ -72,7 +73,15 @@ const FetchPackagesComponent: React.FC = () => {
 
   return (
     <div className="p-4 sm:p-6 lg:p-10 mt-5">
-      <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-6 text-center">Explore Packages That Match Your Style</h2>
+      <div className="flex items-center justify-between mb-6">
+        <Link href="/">
+          <span className="text-gray-600 hover:text-gray-800 text-2xl">
+            <FaArrowLeft />
+          </span>
+        </Link>
+
+        <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-center flex-1">Explore Packages That Match Your Style</h2>
+      </div>
 
       {/* Categories Scrollable Filter */}
       <div className="flex space-x-4 overflow-x-auto pb-4 mb-6">

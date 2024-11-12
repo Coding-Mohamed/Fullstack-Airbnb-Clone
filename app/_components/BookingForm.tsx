@@ -31,6 +31,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ houseId, title, imageURL, typ
     endDate: "",
   });
   const [error, setError] = useState<string | null>(null);
+  const [notification, setNotification] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
   const handleSetBookingData = (fieldName: string, fieldValue: string) => {
     setBookingData((prev) => ({
@@ -72,11 +73,14 @@ const BookingForm: React.FC<BookingFormProps> = ({ houseId, title, imageURL, typ
         type,
         location, // Include location
       });
-      alert("Booking successful!");
-      router.push("/bookings"); // Redirect after successful booking
+      setNotification({ message: "Booking successful!", type: "success" });
+      setTimeout(() => {
+        setNotification(null);
+        router.push("/bookings"); // Redirect after successful booking
+      }, 3000);
     } catch (error) {
       console.error("Error booking:", error);
-      setError("Failed to book. Please try again.");
+      setNotification({ message: "Failed to book. Please try again.", type: "error" });
     }
   };
 
@@ -113,6 +117,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ houseId, title, imageURL, typ
     <div className="p-5 mt-5 bg-white rounded-lg shadow-lg max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold mb-4 text-center">Book this {type === "listing" ? "Listing" : "Package"}</h2>
       {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+      {notification && <div className={`text-white px-4 py-2 rounded-lg mb-4 ${notification.type === "success" ? "bg-green-500" : "bg-red-500"}`}>{notification.message}</div>}
       <form onSubmit={handleBooking} className="space-y-4">
         <div>
           <label className="block text-gray-700 text-sm font-medium">Full Name</label>

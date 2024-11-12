@@ -50,7 +50,7 @@ const AdvertiseWithUs = () => {
           <div className="bg-white bg-opacity-80 p-6 rounded-lg shadow-lg max-w-md">
             <h2 className="text-lg font-bold mb-4 text-black">List Your Property with Confidence on Nordic Exp</h2>
             <p className="text-sm text-black mb-6">Enjoy seamless hosting with 24/7 support, easy setup, and top-rated guests. Hosting on Nordic is as relaxing as a vacation.</p>
-            <Link href="/Listings">
+            <Link href="/add-houses">
               <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-6 rounded-lg">List with Us</button>
             </Link>
           </div>

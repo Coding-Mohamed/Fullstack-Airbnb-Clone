@@ -6,6 +6,7 @@ import Link from "next/link";
 import BookingForm from "@/app/_components/BookingForm";
 import { useState, useEffect } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { House } from "@/types/types";
 
 interface HouseDetailsProps {
   params: { id: string };

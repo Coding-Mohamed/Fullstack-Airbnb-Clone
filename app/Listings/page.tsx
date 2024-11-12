@@ -112,7 +112,12 @@ const AddListingComponent: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center">
       <form onSubmit={handleSubmit} className="w-full max-w-2xl p-6 bg-white shadow-lg rounded-lg space-y-5">
-        <h2 className="text-2xl font-bold text-gray-700 text-center mb-6">Add New Listing</h2>
+        <div className="flex items-center justify-center mb-4">
+          <button onClick={() => router.push("/")} className="text-gray-600 hover:text-gray-800 text-2xl mr-2" aria-label="Go back">
+            <FaArrowLeft />
+          </button>
+          <h2 className="text-xl font-bold text-gray-800">Add New Listing</h2>
+        </div>
         {["title", "location", "price", "description", "bedrooms", "bathrooms"].map((field) => (
           <div key={field}>
             <label className="block text-lg font-medium text-gray-600 mb-1 capitalize">{field}</label>

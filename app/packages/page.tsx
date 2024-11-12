@@ -112,7 +112,12 @@ const AddPackageForm: React.FC = () => {
 
   return (
     <div className="max-w-lg mx-auto mt-10 p-8 bg-white shadow-lg rounded-xl">
-      <h2 className="text-3xl font-semibold text-gray-800 mb-6 text-center">Add New Package</h2>
+      <div className="flex items-center justify-center mb-4">
+        <button onClick={() => router.push("/")} className="text-gray-600 hover:text-gray-800 text-2xl mr-2" aria-label="Go back">
+          <FaArrowLeft />
+        </button>
+        <h2 className="text-xl font-bold text-gray-800">Add New Package</h2>
+      </div>
       <form onSubmit={handleSubmit} className="space-y-5">
         {["title", "location", "price", "description", "duration", "category"].map((field) => (
           <div key={field}>

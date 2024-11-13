@@ -5,9 +5,15 @@ export interface City {
 
 // Interface for the date range used in the date picker
 // Interface for the date range used in the date picker
+// export interface DateRange {
+//   startDate: Date | undefined;
+//   endDate: Date | undefined;
+// }
+
+// Interface for the date range used in the date picker
 export interface DateRange {
-  startDate: Date | undefined;
-  endDate: Date | undefined;
+  startDate: Date | null;
+  endDate: Date | null;
 }
 
 // Interface for search parameters, which includes location, date range, and number of guests

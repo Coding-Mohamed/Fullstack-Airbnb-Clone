@@ -149,7 +149,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ citiesEndpoint }) => {
 
           <div className="relative flex items-center bg-gray-100 p-2 rounded-lg w-full md:w-1/6 border border-gray-300">
             <FaUserFriends className="absolute left-3 text-gray-500" />
-            <input type="number" min="1" value={guests} onChange={(e) => setGuests(Number(e.target.value))} className="bg-transparent flex-1 pl-10 text-gray-600 focus:outline-none no-spinner" placeholder="Guests" />
+            <input type="number" min="1" value={guests} onChange={(e) => setGuests(Number(e.target.value))} className="bg-transparent flex-1 pl-10  text-gray-600 focus:outline-none no-spinner" placeholder="Guests" />
           </div>
 
           <button onClick={handleSearch} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg w-full md:w-auto">

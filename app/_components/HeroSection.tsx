@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useEffect, useRef } from "react";
 import { FaMapMarkerAlt, FaCalendarAlt, FaUserFriends } from "react-icons/fa";
 import DatePicker from "react-datepicker";
@@ -72,7 +73,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({ citiesEndpoint }) => {
   const handleCitySelect = (cityName: string) => {
     setLocation(cityName);
     setShowCities(false);
-    setErrorMessage(""); // Clear error message when a city is selected
+    setErrorMessage("");
+  };
+
+  const handleDateChange = (field: keyof DateRange) => (date: Date | null) => {
+    setDateRange((prev) => ({ ...prev, [field]: date ? date : undefined }));
   };
 
   const handleSearch = async () => {
@@ -87,18 +92,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ citiesEndpoint }) => {
 
       const [listingsSnapshot, packagesSnapshot] = await Promise.all([getDocs(listingsQuery), getDocs(packagesQuery)]);
 
-      const results = [
-        ...listingsSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          type: "listing",
-          ...doc.data(),
-        })),
-        ...packagesSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          type: "package",
-          ...doc.data(),
-        })),
-      ];
+      const results = [...listingsSnapshot.docs.map((doc) => ({ id: doc.id, type: "listing", ...doc.data() })), ...packagesSnapshot.docs.map((doc) => ({ id: doc.id, type: "package", ...doc.data() }))];
 
       const searchParams = new URLSearchParams({
         location,
@@ -139,17 +133,17 @@ const HeroSection: React.FC<HeroSectionProps> = ({ citiesEndpoint }) => {
 
           <div className="relative flex items-center bg-gray-100 p-2 rounded-lg w-full md:w-1/5 border border-gray-300">
             <FaCalendarAlt className="absolute left-3 text-gray-500" />
-            <DatePicker selected={dateRange.startDate} onChange={(date) => setDateRange((prev) => ({ ...prev, startDate: date }))} selectsStart startDate={dateRange.startDate} endDate={dateRange.endDate} placeholderText="Check-in" className="bg-transparent flex-1 pl-10 text-black focus:outline-none" />
+            <DatePicker selected={dateRange.startDate ?? new Date()} onChange={handleDateChange("startDate")} selectsStart startDate={dateRange.startDate} endDate={dateRange.endDate} placeholderText="Check-in" className="bg-transparent flex-1 pl-10 text-black focus:outline-none" />
           </div>
 
           <div className="relative flex items-center bg-gray-100 p-2 rounded-lg w-full md:w-1/5 border border-gray-300">
             <FaCalendarAlt className="absolute left-3 text-gray-500" />
-            <DatePicker selected={dateRange.endDate} onChange={(date) => setDateRange((prev) => ({ ...prev, endDate: date }))} selectsEnd startDate={dateRange.startDate} endDate={dateRange.endDate} minDate={dateRange.startDate} placeholderText="Check-out" className="bg-transparent flex-1 pl-10 text-black focus:outline-none" />
+            <DatePicker selected={dateRange.endDate} onChange={handleDateChange("endDate")} selectsEnd startDate={dateRange.startDate} endDate={dateRange.endDate} minDate={dateRange.startDate} placeholderText="Check-out" className="bg-transparent flex-1 pl-10 text-black focus:outline-none" />
           </div>
 
           <div className="relative flex items-center bg-gray-100 p-2 rounded-lg w-full md:w-1/6 border border-gray-300">
             <FaUserFriends className="absolute left-3 text-gray-500" />
-            <input type="number" min="1" value={guests} onChange={(e) => setGuests(Number(e.target.value))} className="bg-transparent flex-1 pl-10  text-gray-600 focus:outline-none no-spinner" placeholder="Guests" />
+            <input type="number" min="1" value={guests} onChange={(e) => setGuests(Number(e.target.value))} className="bg-transparent flex-1 pl-10 text-gray-600 focus:outline-none no-spinner" placeholder="Guests" />
           </div>
 
           <button onClick={handleSearch} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg w-full md:w-auto">

@@ -43,18 +43,16 @@ const SearchResults: React.FC = () => {
 
         const searchResults: SearchResult[] = [
           ...listingsSnapshot.docs.map((doc) => ({
-            id: doc.id,
             uid: doc.id,
             type: "house" as const,
-            ...(doc.data() as Omit<SearchResult, "id" | "type">),
+            ...(doc.data() as Omit<SearchResult, "id" | "type" | "uid">),
           })),
           ...packagesSnapshot.docs.map((doc) => ({
-            id: doc.id,
             uid: doc.id,
             type: "package" as const,
-            ...(doc.data() as Omit<SearchResult, "id" | "type">),
+            ...(doc.data() as Omit<SearchResult, "id" | "type" | "uid">),
           })),
-        ];
+        ].map((result) => ({ ...result, id: result.uid })); // Add 'id' field with the same value as 'uid'
 
         setResults(searchResults);
         setLoading(false);

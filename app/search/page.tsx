@@ -1,8 +1,12 @@
-import React from "react";
+import React, { Suspense } from "react";
 import SearchResults from "../_components/SearchResults";
 
 const SearchPage: React.FC = () => {
-  return <SearchResults />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchResults />
+    </Suspense>
+  );
 };
 
 export default SearchPage;

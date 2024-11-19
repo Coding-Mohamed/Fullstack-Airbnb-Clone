@@ -62,7 +62,7 @@ const ProfileDropdown: React.FC = () => {
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <button onClick={() => setDropdownOpen(!dropdownOpen)} className="flex flex-col md:flex-row items-center space-y-1 md:space-y-0 md:space-x-2 hover:text-[#FFF2E5] transition duration-200">
+      <button onClick={() => setDropdownOpen(!dropdownOpen)} className="flex flex-col md:flex-row items-center space-y-1 md:space-y-0 md:space-x-2 hover:text-[#88342c] transition duration-200">
         <CgProfile size={20} />
         <span>Profile</span>
       </button>

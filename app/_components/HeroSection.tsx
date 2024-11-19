@@ -10,11 +10,7 @@ import images from "./Images";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 
-interface HeroSectionProps {
-  citiesEndpoint: string;
-}
-
-const HeroSection: React.FC<HeroSectionProps> = ({ citiesEndpoint }) => {
+const HeroSection: React.FC = () => {
   const router = useRouter();
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   const [location, setLocation] = useState<string>("");
@@ -77,7 +73,16 @@ const HeroSection: React.FC<HeroSectionProps> = ({ citiesEndpoint }) => {
   };
 
   const handleDateChange = (field: keyof DateRange) => (date: Date | null) => {
-    setDateRange((prev) => ({ ...prev, [field]: date ? date : undefined }));
+    setDateRange((prev) => {
+      const updatedDateRange = { ...prev, [field]: date ? date : undefined };
+
+      // Ensure endDate is not before startDate
+      if (field === "startDate" && updatedDateRange.endDate && date && date > updatedDateRange.endDate) {
+        updatedDateRange.endDate = date;
+      }
+
+      return updatedDateRange;
+    });
   };
 
   const handleSearch = async () => {
@@ -138,7 +143,16 @@ const HeroSection: React.FC<HeroSectionProps> = ({ citiesEndpoint }) => {
 
           <div className="relative flex items-center bg-gray-100 p-2 rounded-lg w-full md:w-1/5 border border-gray-300">
             <FaCalendarAlt className="absolute left-3 text-gray-500" />
-            <DatePicker selected={dateRange.endDate} onChange={handleDateChange("endDate")} selectsEnd startDate={dateRange.startDate} endDate={dateRange.endDate} minDate={dateRange.startDate} placeholderText="Check-out" className="bg-transparent flex-1 pl-10 text-black focus:outline-none" />
+            <DatePicker
+              selected={dateRange.endDate}
+              onChange={handleDateChange("endDate")}
+              selectsEnd
+              startDate={dateRange.startDate}
+              endDate={dateRange.endDate}
+              minDate={dateRange.startDate} // Ensure end date can't be before start date
+              placeholderText="Check-out"
+              className="bg-transparent flex-1 pl-10 text-black focus:outline-none"
+            />
           </div>
 
           <div className="relative flex items-center bg-gray-100 p-2 rounded-lg w-full md:w-1/6 border border-gray-300">
